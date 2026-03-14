@@ -3,19 +3,42 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import { ImageBackground, StyleSheet } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { GameOverScreen } from "screens/GameOverScreen";
 import { GameScreen } from "screens/GameScreen";
 import { StartGameScreen } from "screens/StartGameScreen";
+import { useFonts } from "expo-font";
+import AppLoading from "expo-app-loading";
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
+    "open-sans-bold": require("./assets/fonts/OpenSans-Bold.ttf"),
+  });
   const [userNumber, setUserNumber] = useState("");
+  const [gameIsOver, setGameIsOver] = useState(true);
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
   const pickedNumberHandler = (pickedNumber) => {
     setUserNumber(pickedNumber);
+    setGameIsOver(false);
   };
 
   let sreen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
 
   if (userNumber) {
-    sreen = <GameScreen />;
+    sreen = (
+      <GameScreen
+        userNumber={userNumber}
+        onGameOver={() => setGameIsOver(true)}
+      />
+    );
+  }
+
+  if (gameIsOver && userNumber) {
+    sreen = <GameOverScreen />;
   }
 
   return (
