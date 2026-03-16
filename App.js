@@ -16,6 +16,7 @@ export default function App() {
   });
   const [userNumber, setUserNumber] = useState("");
   const [gameIsOver, setGameIsOver] = useState(true);
+  const [roundsNumber, setRoundsNumber] = useState(0);
 
   if (!fontsLoaded) {
     return <AppLoading />;
@@ -33,12 +34,23 @@ export default function App() {
       <GameScreen
         userNumber={userNumber}
         onGameOver={() => setGameIsOver(true)}
+        onUpdateRounds={(rounds) => setRoundsNumber(rounds)}
       />
     );
   }
 
   if (gameIsOver && userNumber) {
-    sreen = <GameOverScreen />;
+    sreen = (
+      <GameOverScreen
+        userNumber={userNumber}
+        roundsNumber={roundsNumber}
+        onStartNewGame={() => {
+          setUserNumber("");
+          setRoundsNumber(0);
+          setGameIsOver(true);
+        }}
+      />
+    );
   }
 
   return (
