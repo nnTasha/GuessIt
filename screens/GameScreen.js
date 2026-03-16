@@ -4,8 +4,9 @@ import { InstructionText } from "components/ui/InstructionText";
 import { PrimaryButton } from "components/ui/PrimaryButton";
 import { Title } from "components/ui/Title";
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Text, Alert } from "react-native";
+import { View, StyleSheet, Text, Alert, FlatList } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { GuessLogItem } from "components/game/GuessLogItem";
 
 const generateRandomBetween = (min, max, exclude) => {
   const rdnNum = Math.floor(Math.random() * (max - min)) + min;
@@ -19,9 +20,10 @@ const generateRandomBetween = (min, max, exclude) => {
 let minBoundary = 1;
 let maxBoundary = 100;
 
-export const GameScreen = ({ userNumber, onGameOver }) => {
+export const GameScreen = ({ userNumber, onGameOver, onUpdateRounds }) => {
   const initialGuess = generateRandomBetween(1, 100, userNumber);
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
+  const [guessRounds, setGuessRounds] = useState([initialGuess]);
 
   useEffect(() => {
     minBoundary = 1;
@@ -49,6 +51,8 @@ export const GameScreen = ({ userNumber, onGameOver }) => {
       currentGuess,
     );
     setCurrentGuess(newRndNumber);
+    onUpdateRounds((prevRounds) => prevRounds + 1);
+    setGuessRounds((prevGuessRounds) => [newRndNumber, ...prevGuessRounds]);
   };
 
   useEffect(() => {
@@ -77,10 +81,20 @@ export const GameScreen = ({ userNumber, onGameOver }) => {
         </View>
       </Card>
       <View>
-        <Text>-1</Text>
-      </View>
-      <View>
         <Text>Log Rounds</Text>
+        {/* {guessRounds.map((round, index) => (
+          <Text key={index}>{round}</Text>
+        ))} */}
+        <FlatList
+          data={guessRounds}
+          renderItem={({ item, index }) => (
+            <GuessLogItem
+              roundNumber={guessRounds.length - index}
+              guess={item}
+            />
+          )}
+          keyExtractor={(item) => item}
+        />
       </View>
     </View>
   );
@@ -97,5 +111,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
+  },
+  listContainer: {
+    flex: 1,
+    padding: 16,
   },
 });
