@@ -3,7 +3,8 @@
     "baseUrl": ".",
     "target": "es2020",
     "module": "es2015",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
+    "moduleSuffixes": [".ios", ".android", ""],
     "jsx": "react-native",
     "checkJs": true
   },
