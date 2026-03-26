@@ -1,7 +1,5 @@
 {
   "name": "GuessIt",
   "slug": "GuessIt",
-  "plugins": [
-    "expo-font"
-  ]
+  "plugins": ["expo-font"]
 }
